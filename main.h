@@ -3,7 +3,9 @@
 
 #include <GLFW/glfw3.h>
 
-void processInput(GLFWwindow* window);
+#include "Platform/Platform.h"
+
+void processInput(Platform& platform);
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
