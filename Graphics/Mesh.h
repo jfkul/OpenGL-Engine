@@ -8,7 +8,9 @@ struct Mesh
 {
     unsigned int VBO;
     unsigned int VAO;
+    unsigned int EBO;
     size_t vertexCount;
+    size_t indexCount;
     Material* material;
 };
 

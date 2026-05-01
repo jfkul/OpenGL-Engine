@@ -16,46 +16,54 @@ const char* kTitle { "OpenGL Engine" };
 
 // TESTING DATA
 std::vector<float> vertices = {
-    -0.5f, -0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-     0.0f,  0.5f, 0.0f
+    // positions          // colors           // texture coords
+    0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+    0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+   -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+   -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left
 };
-
-std::vector<float> vertices2 = {
-    -0.5f, -0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-     0.0f,  -1.0f, 0.0f
+std::vector<unsigned int> indices = {
+    0, 1, 3,   // first triangle
+    1, 2, 3    // second triangle
 };
 
 int main()
 {
-    Platform platform;
+    Platform platform {};
     platform.initWindow(kWidth, kHeight, kTitle);
 
-    OpenGLRenderer renderer;
+    OpenGLRenderer renderer {};
     renderer.init(kWidth, kHeight);
 
     platform.setFramebufferSizeCallback(renderer.onResize);
 
-    Mesh triangleMesh = renderer.createMesh(vertices);
-    Mesh triangleMesh2 = renderer.createMesh(vertices2);
+    Mesh rectMesh = renderer.createMesh(vertices, indices);
+
+    Shader textureShader { "shaders/texture.vert", "shaders/texture.frag" };
+
+    Texture container = renderer.createTexture(Image { "Graphics/TestingAssets/container.jpg" });
+
+    if (rectMesh.material)
+    {
+        rectMesh.material->texture = &container;
+        rectMesh.material->shader = textureShader;
+    }
 
     // Rendering loop
     while (!platform.windowShouldClose())
     {
-        // Input
+        // Input and events
         processInput(platform);
         platform.pollEvents();  // Check position on this
 
         // Rendering
         renderer.beginFrame();
 
-        renderer.drawMesh(triangleMesh);
-        renderer.drawMesh(triangleMesh2);
+        renderer.drawMesh(rectMesh);
 
         renderer.endFrame();
 
-        // Poll events and swap buffers
+        // Swap buffers
         platform.presentFrame();
     }
 

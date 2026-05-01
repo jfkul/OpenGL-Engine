@@ -16,6 +16,10 @@ add_executable(OpenGL_Engine main.cpp includes/glad/src/glad.c
         Platform/Platform.cpp
         Graphics/Mesh.h
         Graphics/Material.h
+        includes/stb_image.h
+        includes/stb_image.cpp
+        Assets/Image.h
+        Graphics/Texture.h
 )
 
 target_link_libraries(OpenGL_Engine
@@ -27,13 +31,9 @@ target_include_directories(OpenGL_Engine PRIVATE
         includes/glad/include
 )
 
-# Copy shader files from source to build directory
-configure_file(
-        ${CMAKE_SOURCE_DIR}/shaders/default.vert
-        ${CMAKE_BINARY_DIR}/shaders/default.vert COPYONLY
-)
+# Copy shader and test files from source to build directory
+file(COPY ${CMAKE_SOURCE_DIR}/shaders
+        DESTINATION ${CMAKE_BINARY_DIR})
 
-configure_file(
-        ${CMAKE_SOURCE_DIR}/shaders/default.frag
-        ${CMAKE_BINARY_DIR}/shaders/default.frag COPYONLY
-)
+file(COPY ${CMAKE_SOURCE_DIR}/Graphics/TestingAssets
+        DESTINATION ${CMAKE_BINARY_DIR}/Graphics)
